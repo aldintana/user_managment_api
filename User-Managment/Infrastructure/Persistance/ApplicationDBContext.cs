@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistance
 {
-    class ApplicationDBContext : DbContext, IApplicationDBContext
+    public class ApplicationDBContext : DbContext, IApplicationDBContext
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
          : base(options)
