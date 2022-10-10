@@ -11,8 +11,8 @@ namespace Application.Services
 {
     public class BaseService<T, TSearch, TDb, TInsert, TUpdate> : IBaseService<T, TSearch, TInsert, TUpdate> where T : class where TSearch : class where TInsert : class where TUpdate : class where TDb : BaseEntity<int> 
     {
-        private readonly IApplicationDBContext _context;
-        private readonly IMapper _mapper;
+        protected readonly IApplicationDBContext _context;
+        protected readonly IMapper _mapper;
         public BaseService(IApplicationDBContext context, IMapper mapper)
         {
             _context = context;
