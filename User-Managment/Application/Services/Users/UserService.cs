@@ -70,7 +70,5 @@ namespace Application.Services.Users
             byte[] inArray = algorithm.ComputeHash(dst);
             return Convert.ToBase64String(inArray);
         }
-
-
     }
 }

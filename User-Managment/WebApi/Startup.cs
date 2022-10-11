@@ -6,7 +6,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using WebApi.Error;
+using Microsoft.OpenApi.Models;
+using System.Linq;
 
 namespace WebApi
 {
@@ -26,8 +30,8 @@ namespace WebApi
             services.AddAutoMapper(typeof(MapperProfile));
             services.AddSwaggerGen();
             services.AddPersistence(Configuration);
-
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<ProblemDetailsFactory, UserManagmentProblemDetailsFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +41,7 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseExceptionHandler("/error");
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
