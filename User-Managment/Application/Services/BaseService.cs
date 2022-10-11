@@ -24,7 +24,7 @@ namespace Application.Services
             var entity = _context.Set<TDb>();
             if(search is BaseSearchRequest baseSearchRequest)
             {
-                return await PagedList<TDb, T>.CreateAsync(entity.AsQueryable(), _mapper, baseSearchRequest.PageNumber, baseSearchRequest.PageSize);
+                return await PagedList<TDb, T>.CreateAsync(entity.AsQueryable(), _mapper, baseSearchRequest.CurrentPage, baseSearchRequest.PageSize);
             }
             return await PagedList<TDb, T>.CreateAsync(entity.AsQueryable(), _mapper);
         }

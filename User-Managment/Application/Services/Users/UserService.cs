@@ -35,7 +35,7 @@ namespace Application.Services.Users
                 }
             }
 
-            return await PagedList<Domain.Entities.User, User>.CreateAsync(entity,  _mapper, searchRequest.PageNumber, searchRequest.PageSize);
+            return await PagedList<Domain.Entities.User, User>.CreateAsync(entity,  _mapper, searchRequest.CurrentPage, searchRequest.PageSize);
         }
 
         public override async Task<User> InsertAsync(UserInsertRequest insertRequest)

@@ -47,7 +47,13 @@ namespace WebApi
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
-
+            app.UseCors(builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

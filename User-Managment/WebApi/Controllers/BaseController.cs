@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         public virtual async Task<IActionResult> GetAsync([FromQuery] TSearch search)
         {
             var entities = await _service.GetAsync(search);
-            return Ok(new PagedResponse<IEnumerable<T>>(entities, entities.CurrentPage, entities.PageSize));
+            return Ok(new PagedResponse<IEnumerable<T>>(entities, entities.CurrentPage, entities.PageSize, entities.TotalCount));
         }
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetByIdAsync(int id)
