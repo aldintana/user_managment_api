@@ -20,7 +20,7 @@ namespace Application.Services.Users
             var entity = _context.Set<Domain.Entities.User>().AsQueryable();
             if(searchRequest != null)
             {
-                if(string.IsNullOrWhiteSpace(searchRequest.TextSearch))
+                if(!string.IsNullOrWhiteSpace(searchRequest.TextSearch))
                 {
                     entity = entity.Where(e => 
                         e.FirstName.ToLower().Contains(searchRequest.TextSearch.ToLower()) ||
