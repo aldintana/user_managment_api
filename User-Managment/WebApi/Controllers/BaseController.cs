@@ -7,10 +7,10 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseController<T, TSearch, TInsert, TUpdate> : ControllerBase where T : class where TSearch : class where TInsert : class where TUpdate : class
+    public class BaseController<T, TDb, TSearch, TInsert, TUpdate> : ControllerBase where T : class where TSearch : class where TInsert : class where TUpdate : class where TDb : class
     {
-        protected readonly IBaseService<T, TSearch, TInsert, TUpdate> _service;
-        public BaseController(IBaseService<T, TSearch, TInsert, TUpdate> service)
+        protected readonly IBaseService<T, TDb, TSearch, TInsert, TUpdate> _service;
+        public BaseController(IBaseService<T, TDb, TSearch, TInsert, TUpdate> service)
         {
             _service = service;
         }

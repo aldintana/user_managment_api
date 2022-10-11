@@ -7,7 +7,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController<User, UserSearchRequest, UserInsertRequest, UserUpdateRequest>
+    public class UserController : BaseController<User, Domain.Entities.User, UserSearchRequest, UserInsertRequest, UserUpdateRequest>
     {
         public UserController(IUserService service) : base(service)
         {

@@ -1,15 +1,15 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Domain.Entities;
+using Application.Helpers;
+using Application.Requests;
 using Application.Interfaces;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Application.Common.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Application.Services
 {
-    public class BaseService<T, TSearch, TDb, TInsert, TUpdate> : IBaseService<T, TSearch, TInsert, TUpdate> where T : class where TSearch : class where TInsert : class where TUpdate : class where TDb : BaseEntity<int> 
+    public class BaseService<T, TSearch, TDb, TInsert, TUpdate> : IBaseService<T, TDb, TSearch, TInsert, TUpdate> where T : class where TSearch : class where TInsert : class where TUpdate : class where TDb : BaseEntity<int> 
     {
         protected readonly IApplicationDBContext _context;
         protected readonly IMapper _mapper;
@@ -19,10 +19,14 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAsync(TSearch search = null)
+        public virtual async Task<PagedList<TDb, T>> GetAsync(TSearch search = null)
         {
             var entity = _context.Set<TDb>();
-            return _mapper.Map<List<T>>(await entity.ToListAsync());
+            if(search is BaseSearchRequest baseSearchRequest)
+            {
+                return await PagedList<TDb, T>.CreateAsync(entity.AsQueryable(), _mapper, baseSearchRequest.PageNumber, baseSearchRequest.PageSize);
+            }
+            return await PagedList<TDb, T>.CreateAsync(entity.AsQueryable(), _mapper);
         }
 
         public virtual async Task<T> DeleteAsync(int id)
@@ -57,5 +61,6 @@ namespace Application.Services
             await _context.SaveChangesAsync();
             return _mapper.Map<T>(entity);
         }
+
     }
 }
