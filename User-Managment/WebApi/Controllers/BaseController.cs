@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Application.Responses;
 
 namespace WebApi.Controllers
 {
@@ -21,9 +22,10 @@ namespace WebApi.Controllers
             return Ok(await _service.DeleteAsync(id));
         }
         [HttpGet]
-        public virtual async Task<IEnumerable<T>> GetAsync([FromQuery] TSearch search)
+        public virtual async Task<IActionResult> GetAsync([FromQuery] TSearch search)
         {
-            return await _service.GetAsync(search);
+            var entities = await _service.GetAsync(search);
+            return Ok(new PagedResponse<IEnumerable<T>>(entities, entities.CurrentPage, entities.PageSize));
         }
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetByIdAsync(int id)

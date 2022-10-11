@@ -41,6 +41,7 @@ namespace Application.Services.Users
         public override async Task<User> InsertAsync(UserInsertRequest insertRequest)
         {
             var entity = _mapper.Map<Domain.Entities.User>(insertRequest);
+            entity.DateCreated = DateTime.Now;
             entity.PasswordSalt = GenerateSalt();
             entity.PasswordHash = GenerateHash(entity.PasswordSalt, insertRequest.Password);
 
