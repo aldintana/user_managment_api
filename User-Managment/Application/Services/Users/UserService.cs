@@ -9,6 +9,7 @@ using Application.Requests.Users;
 using System.Security.Cryptography;
 using Application.Interfaces.Users;
 using Application.Common.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Users
 {
@@ -33,36 +34,59 @@ namespace Application.Services.Users
                         e.Status.ToLower().Contains(searchRequest.TextSearch.ToLower())
                     );
                 }
+                if (searchRequest.IncludeList?.Any() ?? false)
+                {
+                    foreach (var includeEntity in searchRequest.IncludeList)
+                    {
+                        entity = entity.Include(includeEntity);
+                    }
+                }
             }
 
             if (searchRequest.SortName != null && searchRequest.SortDirection != null)
             {
                 var isAsc = searchRequest.SortDirection == "asc";
-                var propertyName = entity.FirstOrDefault().GetType().GetProperty(searchRequest.SortName).Name;
                 var firstEntity = entity.FirstOrDefault();
-                if (nameof(firstEntity.FirstName) == propertyName)
+                if(firstEntity != null)
                 {
-                    entity = isAsc ? entity.OrderBy(e => e.FirstName) : entity.OrderByDescending(e => e.FirstName);
+                    var propertyName = firstEntity.GetType().GetProperty(searchRequest.SortName).Name;
+                    if (nameof(firstEntity.FirstName) == propertyName)
+                    {
+                        entity = isAsc ? entity.OrderBy(e => e.FirstName.ToLower()) : entity.OrderByDescending(e => e.FirstName.ToLower());
+                    }
+                    else if (nameof(firstEntity.LastName) == propertyName)
+                    {
+                        entity = isAsc ? entity.OrderBy(e => e.LastName.ToLower()) : entity.OrderByDescending(e => e.LastName.ToLower());
+                    }
+                    else if (nameof(firstEntity.Email) == propertyName)
+                    {
+                        entity = isAsc ? entity.OrderBy(e => e.Email.ToLower()) : entity.OrderByDescending(e => e.Email.ToLower());
+                    }
+                    else if (nameof(firstEntity.Status) == propertyName)
+                    {
+                        entity = isAsc ? entity.OrderBy(e => e.Status.ToLower()) : entity.OrderByDescending(e => e.Status.ToLower());
+                    }
+                    else
+                    {
+                        entity = entity.OrderBy(e => e.DateCreated);
+                    }
                 }
-                else if(nameof(firstEntity.LastName) == propertyName)
-                {
-                    entity = isAsc ? entity.OrderBy(e => e.LastName) : entity.OrderByDescending(e => e.LastName);
-                }
-                else if (nameof(firstEntity.Email) == propertyName)
-                {
-                    entity = isAsc ? entity.OrderBy(e => e.Email) : entity.OrderByDescending(e => e.Email);
-                }
-                else if (nameof(firstEntity.Status) == propertyName)
-                {
-                    entity = isAsc ? entity.OrderBy(e => e.Status) : entity.OrderByDescending(e => e.Status);
-                }
-                else
-                {
-                    entity = entity.OrderBy(e => e.DateCreated);
-                }
-                
             }
             return await PagedList<Domain.Entities.User, User>.CreateAsync(entity,  _mapper, searchRequest.CurrentPage, searchRequest.PageSize);
+        }
+
+        public async Task<User> GetByIdAsync(int id, string includeItems)
+        {
+            var entity = _context.Set<Domain.Entities.User>().AsQueryable();
+            if (!string.IsNullOrEmpty(includeItems))
+            {
+                var includeArray = includeItems.Split(",");
+                foreach (var include in includeArray)
+                {
+                    entity = entity.Include(include);
+                }
+            }
+            return _mapper.Map<User>(await entity.FirstOrDefaultAsync(x => x.Id == id));
         }
 
         public override async Task<User> InsertAsync(UserInsertRequest insertRequest)

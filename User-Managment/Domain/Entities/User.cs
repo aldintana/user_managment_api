@@ -11,5 +11,8 @@ namespace Domain.Entities
         public string Status { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
+
+        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+
     }
 }

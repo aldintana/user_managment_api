@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using WebApi.Error;
 using Microsoft.OpenApi.Models;
 using System.Linq;
+using Application.Interfaces.UserPermissions;
+using Application.Services.UserPermissions;
+using Application.Services.Permission;
 
 namespace WebApi
 {
@@ -31,6 +34,8 @@ namespace WebApi
             services.AddSwaggerGen();
             services.AddPersistence(Configuration);
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserPermissionService, UserPermissionsService>();
+            services.AddScoped<IPermissionService, PermissionService>();
             services.AddSingleton<ProblemDetailsFactory, UserManagmentProblemDetailsFactory>();
         }
 
