@@ -35,6 +35,33 @@ namespace Application.Services.Users
                 }
             }
 
+            if (searchRequest.SortName != null && searchRequest.SortDirection != null)
+            {
+                var isAsc = searchRequest.SortDirection == "asc";
+                var propertyName = entity.FirstOrDefault().GetType().GetProperty(searchRequest.SortName).Name;
+                var firstEntity = entity.FirstOrDefault();
+                if (nameof(firstEntity.FirstName) == propertyName)
+                {
+                    entity = isAsc ? entity.OrderBy(e => e.FirstName) : entity.OrderByDescending(e => e.FirstName);
+                }
+                else if(nameof(firstEntity.LastName) == propertyName)
+                {
+                    entity = isAsc ? entity.OrderBy(e => e.LastName) : entity.OrderByDescending(e => e.LastName);
+                }
+                else if (nameof(firstEntity.Email) == propertyName)
+                {
+                    entity = isAsc ? entity.OrderBy(e => e.Email) : entity.OrderByDescending(e => e.Email);
+                }
+                else if (nameof(firstEntity.Status) == propertyName)
+                {
+                    entity = isAsc ? entity.OrderBy(e => e.Status) : entity.OrderByDescending(e => e.Status);
+                }
+                else
+                {
+                    entity = entity.OrderBy(e => e.DateCreated);
+                }
+                
+            }
             return await PagedList<Domain.Entities.User, User>.CreateAsync(entity,  _mapper, searchRequest.CurrentPage, searchRequest.PageSize);
         }
 

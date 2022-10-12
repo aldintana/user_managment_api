@@ -9,8 +9,6 @@ namespace Application.Requests.Users
         [Required(AllowEmptyStrings = false)]
         public string LastName { get; set; }
         [Required(AllowEmptyStrings = false)]
-        public string Username { get; set; }
-        [Required(AllowEmptyStrings = false)]
         [EmailAddress()]
         public string Email { get; set; }
         [Required(AllowEmptyStrings = false)]
